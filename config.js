@@ -1,6 +1,6 @@
 module.exports = {
     server: {
-        port: 5000
+        port: process.env.PORT
     },
     autoUpdate: {
         enabled: false,
@@ -11,29 +11,29 @@ module.exports = {
         devZipUrl: "https://github.com/realPanamo/PasteServer/archive/development.zip"
     },
     storage: {
-        type: "file",
-        host: "127.0.0.1",
-        port: 6379,
-        password: "",
+        type: process.env.STORAGE_TYPE,
+        host: process.env.STORAGE_HOST,
+        port: process.env.STORAGE_PORT,
+        password: process.env.STORAGE_PASSWORD,
         // only arangodb
-        user: "root",
-        database: "pasteServer",
+        user: process.env.STORAGE_USER,
+        database: process.env.STORAGE_DATABASE,
         // only redis
-        documentExpireInMs: 3 * 24 * 60 * 60 * 1000,
+        documentExpireInMs: process.env.DOCUMENT_EXPIRE,
         // only file
-        path: "data"
+        path: process.env.STORAGE_PATH
     },
     createRateLimit: {
-        timeInMs: 60 * 1000,
-        maxRequestsPerTime: 15
+        timeInMs: process.env.CREATE_RATE_LIMIT_TIME_IN_MS,
+        maxRequestsPerTime: process.env.CREATE_RATE_LIMIT_MAX_REQUESTS_PER_TIME
     },
     document: {
-        dataLimit: "2mb",
-        maxLength: 400000
+        dataLimit: process.env.DOCUMENT_DATA_LIMIT,
+        maxLength: process.env.DOCUMENT_MAX_LENGTH
     },
     keyGenerator: {
-        keyLength: 10,
-        keyChars: "abcdefghijklmnopqrstivwxyz0123456789",
-        withToUpperCase: true
+        keyLength: process.env.KEY_GENERATOR_KEY_LENGTH,
+        keyChars: process.env.KEY_GENERATOR_KEY_CHARS,
+        withToUpperCase: process.env.KEY_GENERATOR_WITH_TO_UPPER_CASE
     },
 };
