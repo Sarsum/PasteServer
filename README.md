@@ -1,6 +1,6 @@
 # PasteServer
-Dockerized [PasteServer](https://github.com/realPanamo/PasteServer/) to upload text or code.
-Demo: https://paste.the-systems.eu
+PasteServer to upload text or code.
+Demo: https://just-paste.it
 
 # Usage
 You can use this [Docker Image](https://hub.docker.com/r/einsarsum/pasteserver) out of the box with the file storage:
@@ -57,6 +57,7 @@ services:
         environment:
          - ARANGO_ROOT_PASSWORD=password
 ```
+
 # Config
 Docker environment variables
 
@@ -104,7 +105,7 @@ keyChars but with all letters in uppercase.
 # API
 
 You can use the API of the PasteServer to create, read and delete documents. All API requests can be made 
-to the /documents-route (for example https://paste.the-systems.eu/documents).
+to the /documents-route (for example https://just-paste.it/documents).
 
 ## Create a document
 
@@ -134,7 +135,7 @@ The last three all contain this:
 ## Read a document
 
 Send a GET-request to the /documents-route + the key of the wanted document
-(for example https://paste.dsyn.ga/documents/key).
+(for example https://just-paste.it/documents/$key).
 
 If the document exists, you'll get the following response:
 
@@ -148,9 +149,8 @@ If not, this:
 
 ## Delete a document
 
-Send a GET-request to the /documents/delete-route + the key of the wanted document
-(for example https://paste.dsyn.ga/documents/delete/key). 
-Add a header with the name ```deleteSecret``` and add the secret of the document as value.
+Send a GET-request to the /documents/delete-route + the key of the wanted document + the deleteSecret
+(for example https://just-paste.it/documents/delete/$key/$deleteSecret). 
 
 If everything succeeded, you'll get the following response:
 
