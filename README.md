@@ -3,76 +3,102 @@ PasteServer to upload text or code.
 Demo: https://just-paste.it
 
 # Usage
-To use the server, just download this repo and install [Node.js](http://www.nodejs.org/) and [Redis](http://www.redis.io/) or
-[ArangoDB](http://www.arangodb.com/) for the document-storage. If you don't want to use one of these options, the server also supports a file-storage.
-Now you can edit the ``config.js`` the way you want to. 
+You can use this [Docker Image](https://hub.docker.com/r/einsarsum/pasteserver) out of the box with the file storage:
+```yml
+version: "3"
 
-After you did that, you have to install the dependencies the server needs. Just execute this:
-
-```bash
-npm install
+services
+    pasteserver:
+        image: einsarsum/pasteserver
+        ports:
+         - 5000:5000
 ```
 
-Now you can start the server with the following:
+Or with [Redis](https://hub.docker.com/_/redis) as database:
+```yml
+version: "3"
 
-```bash
-npm start
+services:
+  pasteserver:
+    image: einsarsum/pasteserver
+    ports:
+     - 5000:5000
+    depends_on:
+     - database
+    environment:
+     - STORAGE_TYPE=redis
+     - STORAGE_HOST=database
+     - STORAGE_PASSWORD=password
+
+  database:
+    image: redis:alpine
+    entrypoint: redis-server --appendonly yes --requirepass password
+```
+Or with [ArangoDB](https://hub.docker.com/_/arangodb) as database
+```yml
+version: "3"
+
+services:
+    pasteserver:
+        image: einsarsum/pasteserver
+        ports:
+         - 5000:5000
+        depends_on:
+         - database
+        environment:
+         - STORAGE_TYPE=arango
+         - STORAGE_HOST=database
+         - STORAGE_PORT=8529
+         - STORAGE_PASSWORD=password
+         - STORAGE_DATABASE=pasteServer
+
+    database:
+        image: arangodb
+        environment:
+         - ARANGO_ROOT_PASSWORD=password
 ```
 
 # Config
+Docker environment variables
 
 ## Server-section
 To configure the server itself
 
-*  **port**: The port where the server will run on.
-
-## autoUpdate-section
-To configure the updating of the server
-
-* **enabled**: If the server should perform autoUpdates before starting.
-* **packageJsonURL**: The URL of the package.json file of the remote pasteServer.
-* **zipURL**: The URL of the zip-archive with the files in it.
-* **keepFiles**: The files which shouldn't be replaced when installing an update. Works too for files in dirs.
-(use for example: ``static/index.html``).
-* **devPackageJsonURL**: The URL of the package.json file of the remote development pasteServer.
-* **devZipURL**: The URL of the development zip-archive with the files in it.
-
-The last two options are only being used for the ``checkUpdate -dev`` and ``installUpdate -dev`` commands, which are not recommended. 
-The dev-updates contain the newest features, but might have errors and might not be fully completed.
+*  **PORT**: The port where the server will run on.
 
 ## Storage-section
 To configure the document-storage
 
-*  **type**: The type of the storage. ("file", "redis" or "arangodb")
-*  **host**: The Host of the storage-type.
-*  **port**: The Port of the storage-type.
-*  **password**: The Password of the storage-type.
+*  **STORAGE_TYPE**: The type of the storage. ("file", "redis" or "arangodb")
+*  **STORAGE_HOST**: The Host of the storage-type.
+*  **STORAGE_PORT**: The Port of the storage-type.
+*  **STORAGE_PASSWORD**: The Password of the storage-type.
 
-*  **user**: The user to use for the authentication. (only ArangoDB)
-*  **database**: The database to store the documents in. (only ArangoDB)
+*  **STORAGE_USER**: The user to use for the authentication. (only ArangoDB)
+*  **STORAGE_DATABASE**: The database to store the documents in. (only ArangoDB)
 
-*  **documentExpireInMs**: The time in milliseconds after a document will be deleted when unused. (only Redis)
+*  **DOCUMENT_EXPIRE**: The time in milliseconds after a document will be deleted when unused. (only Redis)
 
-*  **path**: The path of the folder the document-files should be saved in. (only file-storage)
+*  **STORAGE_PATH**: The path of the folder the document-files should be saved in. (only file-storage)
 
 ## RateLimit-section
 To configure the rateLimits of creating and deleting documents
 
-*  **timeInMs**: The time in milliseconds in which a certain amount of requests are allowed per IP.
-*  **maxRequestsPerTime**: The allowed amount of requests per IP per time.
+*  **CREATE_RATE_LIMIT_TIME_IN_MS**: The time in milliseconds in which a certain amount of requests are allowed per IP.
+*  **CREATE_RATE_LIMIT_MAX_REQUESTS_PER_TIME**: The allowed amount of requests per IP per time.
 
 ## Document-section
 To configure documents
 
-*  **dataLimit**: The max. size the data of a creation-request is allowed to have.
-*  **maxLength**: The max. characters a document is allowed to have.
+*  **DOCUMENT_DATA_LIMIT**: The max. size the data of a creation-request is allowed to have.
+*  **DOCUMENT_MAX_LENGTH**: The max. characters a document is allowed to have.
 
 ## KeyGenerator-section
 To configure the creation of the document-keys
 
-*  **keyLength**: The length of a key.
-*  **keyChars**: The characters that will be used to create a key.
-*  **withToUpperCase**: When set to true, the keyChars will be duplicated and added to the current 
+*  **KEY_GENERATOR_KEY_LENGTH**: The length of a key.
+*  **KEY_GENERATOR_KEY_LENGTH**: The characters that will be used to create a key.
+*  **KEY_GENERATOR_WITH_TO_UPPER_CASE**: When set to true, the keyChars will be duplicated and added to the current 
 keyChars but with all letters in uppercase.
 
 
