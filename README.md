@@ -49,6 +49,7 @@ services:
          - STORAGE_TYPE=arango
          - STORAGE_HOST=database
          - STORAGE_PORT=8529
+         - STORAGE_USER=pasteServer
          - STORAGE_PASSWORD=password
          - STORAGE_DATABASE=pasteServer
 
@@ -77,7 +78,7 @@ To configure the document-storage
 *  **STORAGE_USER**: The user to use for the authentication. (only ArangoDB)
 *  **STORAGE_DATABASE**: The database to store the documents in. (only ArangoDB)
 
-*  **DOCUMENT_EXPIRE**: The time in milliseconds after a document will be deleted when unused. (only Redis)
+*  **DOCUMENT_EXPIRE**: The time in milliseconds after a document will be deleted when unused. (only Redis or ArangoDB)
 
 *  **STORAGE_PATH**: The path of the folder the document-files should be saved in. (only file-storage)
 
