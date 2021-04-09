@@ -18,7 +18,7 @@ module.exports = {
         // only arangodb
         user: process.env.STORAGE_USER,
         database: process.env.STORAGE_DATABASE,
-        // only redis
+        // only redis and arangodb
         documentExpireInMs: process.env.DOCUMENT_EXPIRE,
         // only file
         path: process.env.STORAGE_PATH
